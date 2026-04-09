@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libzip-dev \
     libonig-dev \
+    libicu-dev \
     unzip \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd intl pdo_mysql zip mbstring exif pcntl bcmath

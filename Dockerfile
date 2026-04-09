@@ -1,14 +1,14 @@
 FROM php:8.3-apache
 
-# Habilita o mod_rewrite do Apache (necessário para as rotas do Laravel)
+# Habilita o mod_rewrite do Apache
 RUN a2enmod rewrite
 
-# Altera o diretório raiz do Apache para a pasta /public do Laravel
+# Altera o diretório raiz do Apache
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# Instala as dependências do sistema (mbstring no Debian requer libonig-dev)
+# Instala dependências, PHP extensions E o NodeJS (necessário para o Vite)
 RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
@@ -17,6 +17,9 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libicu-dev \
     unzip \
+    curl \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd intl pdo_mysql zip mbstring exif pcntl bcmath
 
@@ -26,13 +29,15 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . .
 
-# Instala as dependências do Laravel
+# 1. Instala dependências do PHP
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Dá as permissões necessárias para o Apache gravar arquivos
+# 2. Instala dependências do Node e faz o build do visual (CSS/JS)
+RUN npm install && npm run build
+
+# Dá permissão base
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Configura o script que vai rodar ao iniciar o container
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 

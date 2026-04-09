@@ -32,7 +32,7 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 # Dá as permissões necessárias para o Apache gravar arquivos
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Configura o script que vai rodar ao iniciar o container aaaaaaaa
+# Configura o script que vai rodar ao iniciar o container
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 

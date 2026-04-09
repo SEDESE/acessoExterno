@@ -8,5 +8,5 @@ php artisan view:cache
 # Roda as migrations forçadamente (exigido pelo Laravel em ambiente de produção)
 php artisan migrate --force
 
-# Inicia o servidor Apache (processo principal)
+# Inicia o servidor Apache
 exec apache2-foreground

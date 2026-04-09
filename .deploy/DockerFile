@@ -28,7 +28,7 @@ COPY . .
 # Instala as dependências do Laravel
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Dá as permissões necessárias para o Apache gravar arquivos
+# Dá as permissões necessárias para o Apache gravar arquivos aaaaaaaaaaaaa
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Configura o script que vai rodar ao iniciar o container
